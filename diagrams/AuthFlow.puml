@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title 2 factor auth flow
+
+actor User
+participant Auth as "Auth site"
+
+database users as "User list"
+collections pwd as "Password SB"
+
+collections tkn as "Token SB"
+database AC as "Authority Center"
+
+User -> Auth : login(login)
+alt password login
+    Auth -> users : find(login)
+    users --> Auth : Pwd address
+    Auth -> pwd : get (public, masked private)
+
+    Auth --> User : public(challange), \nmasked private
+    note right User
+        private = hash(pwd) xor masked private
+        challagne = private(public(challange))
+    end note
+
+    User -> Auth : challange
+
+    note over Auth
+        verifies challange
+    end note
+end
+
+====
+
+alt token login (2 factor)
+    Auth --> User : nonce
+    User -> tkn : set(site url, nonce)
+    User -> Auth : Token address
+
+    Auth -> tkn : get (AC address, signature(login)), (url, nonce)
+    Auth -> AC : get Public Key
+    note left AC
+        verifies known AC and signature
+    end note
+
+    note over Auth
+        verifies both url and nonce
+    end note
+    Auth --> User : signed auth token
+end
+
+
+@enduml

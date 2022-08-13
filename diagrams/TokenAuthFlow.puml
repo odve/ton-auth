@@ -1,0 +1,33 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title 2 factor auth flow
+
+autonumber
+
+actor User
+participant Auth as "Auth site"
+database AC as "Authority Center"
+collections nft as "Signed NFT"
+
+User -> Auth : login(login)
+Auth --> User : nonce
+
+User -> nft : set(site url, nonce)
+User --> nft : check set
+User -> Auth : NFT address
+
+Auth -> nft : get (AC address, signature), (url, nonce)
+Auth -> AC : get Public Key
+note right
+    verifies known AC and NFT signature
+end note
+
+Auth --> User : signed auth token
+note right
+    verifies both url and nonce
+end note
+
+
+
+@enduml
