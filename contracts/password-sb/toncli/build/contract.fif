@@ -1,0 +1,85 @@
+"Asm.fif" include
+// automatically generated from `C:\Users\vomik\AppData\Local\toncli\toncli\func-libs\stdlib.func` `C:\Users\vomik\IdeaProjects\ton-auth\contracts\password-sb\toncli\func\PasswordSB.fc` 
+PROGRAM{
+  DECLPROC getState
+  DECLPROC setState
+  DECLPROC verifyRequest
+  DECLPROC recv_external
+  DECLPROC recv_internal
+  96565 DECLMETHOD get2FactorNonce
+  88250 DECLMETHOD getPublicKey
+  101295 DECLMETHOD getMaskedPrivateKey
+  getState PROC:<{
+    // 
+    c4 PUSH	//  _1
+    CTOS	//  storage
+    256 LDU	//  _3 storage
+    256 LDU	//  _3 _6 storage
+    256 LDU	//  _3 _6 _9 storage
+    32 LDU	//  _3 _6 _9 _12 storage
+    32 LDU	//  _3 _6 _9 _12 _27 _26
+    DROP	//  _3 _6 _9 _12 _15
+  }>
+  setState PROC:<{
+    //  publicKey maskedPrivateKey ownerPublicKey seqno nonce
+    s0 s4 XCHG
+    NEWC	//  nonce maskedPrivateKey ownerPublicKey seqno publicKey _5
+    256 STU	//  nonce maskedPrivateKey ownerPublicKey seqno _7
+    s1 s3 XCHG	//  nonce seqno ownerPublicKey maskedPrivateKey _7
+    256 STU	//  nonce seqno ownerPublicKey _9
+    256 STU	//  nonce seqno _11
+    32 STU	//  nonce _13
+    32 STU	//  _15
+    ENDC	//  _16
+    c4 POP
+  }>
+  verifyRequest PROC:<{
+    //  msg seqno ownerPublicKey
+    s0 s2 XCHG
+    9 PUSHPOW2	//  ownerPublicKey seqno msg _5=512
+    LDSLICEX	//  ownerPublicKey seqno signature msg
+    DUP	//  ownerPublicKey seqno signature msg request
+    32 LDU	//  ownerPublicKey seqno signature msg messageSeqno request
+    s0 s4 XCHG	//  ownerPublicKey request signature msg messageSeqno seqno
+    EQUAL	//  ownerPublicKey request signature msg _13
+    33 THROWIFNOT
+    HASHSU	//  ownerPublicKey request signature _16
+    s0 s1 s3 XCHG3	//  request _16 signature ownerPublicKey
+    CHKSIGNU	//  request _17
+    34 THROWIFNOT
+  }>
+  recv_external PROC:<{
+    //  msg
+    getState INLINECALLDICT	//  msg _15 _16 _17 _18 _19
+    DROP	//  msg publicKey maskedPrivateKey ownerPublicKey seqno
+    s4 s4 s1 XCPU2	//  seqno publicKey maskedPrivateKey ownerPublicKey msg seqno ownerPublicKey
+    verifyRequest CALLDICT	//  seqno publicKey maskedPrivateKey ownerPublicKey request
+    ACCEPT
+    ENDS
+    s0 s3 XCHG	//  ownerPublicKey publicKey maskedPrivateKey seqno
+    INC	//  ownerPublicKey publicKey maskedPrivateKey _12
+    s1 s3 s0 XCHG3
+    PUSHNULL	//  publicKey maskedPrivateKey ownerPublicKey _12 _13
+    setState INLINECALLDICT
+  }>
+  recv_internal PROC:<{
+    //  in_msg
+    DROP	// 
+  }>
+  get2FactorNonce PROC:<{
+    // 
+    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
+    4 1 BLKDROP2	//  nonce
+  }>
+  getPublicKey PROC:<{
+    // 
+    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
+    4 BLKDROP	//  publicKey
+  }>
+  getMaskedPrivateKey PROC:<{
+    // 
+    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
+    s3 s4 XCHG
+    4 BLKDROP	//  maskedPrivateKey
+  }>
+}END>c

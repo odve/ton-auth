@@ -1,4 +1,5 @@
 contract:
+  data: fift/data.fif
   func:
     - func/PasswordSB.fc
   tests:

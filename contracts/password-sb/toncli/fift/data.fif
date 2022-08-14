@@ -1,0 +1,14 @@
+"TonUtil.fif" include
+"Asm.fif" include
+
+"build/contract.pk" load-generate-keypair // generate key pair
+constant private_key  // save private to constant
+constant public_key // save public to constant
+
+<b
+  0 256 u, // publicKey
+  0 256 u, // maskedPrivateKey
+  public_key B, // ownerPublicKey
+  0 32 u, // seqno
+  0 32 u, // nonce
+b>
