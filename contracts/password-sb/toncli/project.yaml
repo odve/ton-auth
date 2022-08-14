@@ -1,0 +1,5 @@
+contract:
+  func:
+    - func/PasswordSB.fc
+  tests:
+    - tests/PasswordSBTest.fc

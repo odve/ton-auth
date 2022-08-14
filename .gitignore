@@ -1,2 +1,3 @@
 *.pk
 .idea
+*/toncli/build/*.fif
