@@ -1,3 +1,7 @@
 *.pk
 .idea
 */toncli/build/*.fif
+*/toncli/build/*.addr
+*/toncli/build/*_address
+*/toncli/build/boc/*.boc
+/todo/

@@ -1,0 +1,35 @@
+"TonUtil.fif" include
+"Asm.fif" include
+
+"contract.pk" load-generate-keypair // generate key pair
+constant private_key  // save private to constant
+constant public_key // save public to constant
+
+<b
+  private_key B,
+b>
+
+dup ."private key: " <s csr. cr
+
+<b
+  public_key B,
+b>
+
+dup ."public key: " <s csr. cr
+
+60 =: timeout   // external message expires in 60 seconds
+
+<b
+  1 32 u, // seqno
+  0 32 u, // time
+  0 1 u, // code
+  777 32 u, // nonce
+b> constant recv_external
+
+recv_external hashu private_key ed25519_sign_uint constant recv_external_sign // create signature of first bits
+
+<b
+  recv_external_sign B,
+b>
+
+dup ."cell: " <s csr. cr

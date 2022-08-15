@@ -1,15 +1,16 @@
 "Asm.fif" include
-// automatically generated from `C:\Users\vomik\AppData\Local\toncli\toncli\func-libs\stdlib.func` `C:\Users\vomik\IdeaProjects\ton-auth\contracts\password-sb\toncli\func\PasswordSB.fc` 
+// automatically generated from `C:\Users\vomik\AppData\Local\toncli\toncli\func-libs\stdlib-tests.func` `C:\Users\vomik\IdeaProjects\ton-auth\contracts\password-sb\toncli\func\PasswordSB.fc` 
 PROGRAM{
   DECLPROC getState
   DECLPROC setState
   DECLPROC verifyRequest
-  DECLPROC recv_external
   DECLPROC recv_internal
-  96565 DECLMETHOD get2FactorNonce
+  DECLPROC recv_external
   88250 DECLMETHOD getPublicKey
   101295 DECLMETHOD getMaskedPrivateKey
-  getState PROC:<{
+  85143 DECLMETHOD seqno
+  96565 DECLMETHOD get2FactorNonce
+  getState PROCREF:<{
     // 
     c4 PUSH	//  _1
     CTOS	//  storage
@@ -40,36 +41,45 @@ PROGRAM{
     LDSLICEX	//  ownerPublicKey seqno signature msg
     DUP	//  ownerPublicKey seqno signature msg request
     32 LDU	//  ownerPublicKey seqno signature msg messageSeqno request
-    s0 s4 XCHG	//  ownerPublicKey request signature msg messageSeqno seqno
-    EQUAL	//  ownerPublicKey request signature msg _13
-    33 THROWIFNOT
-    HASHSU	//  ownerPublicKey request signature _16
-    s0 s1 s3 XCHG3	//  request _16 signature ownerPublicKey
-    CHKSIGNU	//  request _17
-    34 THROWIFNOT
+    32 LDU	//  ownerPublicKey seqno signature msg messageSeqno validUntill request
+    s2 s5 XCHG2	//  ownerPublicKey request signature msg validUntill messageSeqno seqno
+    NEQ	//  ownerPublicKey request signature msg validUntill _17
+    33 THROWIF
+    NOW	//  ownerPublicKey request signature msg validUntill _20
+    LEQ	//  ownerPublicKey request signature msg _21
+    34 THROWIF
+    HASHSU	//  ownerPublicKey request signature _24
+    s0 s1 s3 XCHG3	//  request _24 signature ownerPublicKey
+    CHKSIGNU	//  request _25
+    35 THROWIFNOT
+  }>
+  recv_internal PROC:<{
+    //  msg
+    DROP	// 
   }>
   recv_external PROC:<{
     //  msg
-    getState INLINECALLDICT	//  msg _15 _16 _17 _18 _19
-    DROP	//  msg publicKey maskedPrivateKey ownerPublicKey seqno
-    s4 s4 s1 XCPU2	//  seqno publicKey maskedPrivateKey ownerPublicKey msg seqno ownerPublicKey
-    verifyRequest CALLDICT	//  seqno publicKey maskedPrivateKey ownerPublicKey request
+    getState INLINECALLDICT	//  msg publicKey maskedPrivateKey ownerPublicKey seqno nonce
+    s5 s1 s2 XCPU2	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno msg seqno ownerPublicKey
+    verifyRequest CALLDICT	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
     ACCEPT
+    1 LDU	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno isChangePasswordOperation request
+    SWAP	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request isChangePasswordOperation
+    IF:<{	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
+      256 LDU	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno _37 _36
+      NIP	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
+      256 LDU	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno _39 _38
+      NIP	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
+    }>ELSE<{	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
+      s5 POP	//  request publicKey maskedPrivateKey ownerPublicKey seqno
+      s0 s4 XCHG	//  seqno publicKey maskedPrivateKey ownerPublicKey request
+      32 LDU	//  seqno publicKey maskedPrivateKey ownerPublicKey nonce request
+      s1 s5 XCHG	//  nonce publicKey maskedPrivateKey ownerPublicKey seqno request
+    }>
     ENDS
-    s0 s3 XCHG	//  ownerPublicKey publicKey maskedPrivateKey seqno
-    INC	//  ownerPublicKey publicKey maskedPrivateKey _12
-    s1 s3 s0 XCHG3
-    PUSHNULL	//  publicKey maskedPrivateKey ownerPublicKey _12 _13
+    INC	//  nonce publicKey maskedPrivateKey ownerPublicKey _27
+    4 ROLL	//  publicKey maskedPrivateKey ownerPublicKey _27 nonce
     setState INLINECALLDICT
-  }>
-  recv_internal PROC:<{
-    //  in_msg
-    DROP	// 
-  }>
-  get2FactorNonce PROC:<{
-    // 
-    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
-    4 1 BLKDROP2	//  nonce
   }>
   getPublicKey PROC:<{
     // 
@@ -81,5 +91,16 @@ PROGRAM{
     getState INLINECALLDICT	//  _6 _7 _8 _9 _10
     s3 s4 XCHG
     4 BLKDROP	//  maskedPrivateKey
+  }>
+  seqno PROC:<{
+    // 
+    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
+    s1 s4 XCHG
+    4 BLKDROP	//  seqno
+  }>
+  get2FactorNonce PROC:<{
+    // 
+    getState INLINECALLDICT	//  _6 _7 _8 _9 _10
+    4 1 BLKDROP2	//  nonce
   }>
 }END>c
