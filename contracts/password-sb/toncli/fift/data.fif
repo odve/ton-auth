@@ -6,8 +6,8 @@ constant private_key  // save private to constant
 constant public_key // save public to constant
 
 <b
-  0 256 u, // publicKey
-  0 256 u, // maskedPrivateKey
+  30276020712889749932096309947112204359683624851284017880808207510066713233318 256 u, // publicKey
+  90186433801602791527890801958631873428700958368186883215502877358961305204525 256 u, // maskedPrivateKey
   public_key B, // ownerPublicKey
   0 32 u, // seqno
   0 32 u, // nonce

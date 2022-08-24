@@ -13,3 +13,5 @@
 ## Generate test message data
 `fift -s .\data.fif`
 
+## Send message
+`toncli send -n testnet -a 0.03 --address "addr" --body ./fift/try.fif`
