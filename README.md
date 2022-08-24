@@ -1,8 +1,9 @@
 # ton-auth
 
 ## Motivation
-This contract is a reserch of ton smart contracts ability to provice authentication and authorization of user on applications
-and sites.
+For easier access to sites and application user: 
+1. Should have an ability to enter the system(app, site, etc.) knowing only login and password.
+2. Avoid impure requests to smart contracts as it might be costly or even with small cost still scarie than free service.
 
 ### PasswordSB
 PasswordSB is a contract that stores both public and private key of the user in some way.
